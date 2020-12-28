@@ -1,0 +1,240 @@
+#:kivy 2.0.0
+
+<MyGridLayout>
+    id: myroot
+    GridLayout:
+        cols:1
+        size: root.width, root.height
+
+        ActionBar:
+            pos_hint: {'top':1}
+            ActionView:
+                use_separator: True
+                ActionPrevious:
+                    title: 'Reverb Convolver'
+                    with_previous: False
+                ActionGroup:
+                    text: 'Tools'
+                    mode: 'spinner'
+                    ActionButton:
+                        text: 'Select File'
+                        on_release: myroot.show_load()
+                    ActionButton:
+                        text: 'Select IR'
+                        on_release: myroot.show_ir_signals()
+                    ActionButton:
+                        text: 'Convolve'
+                        on_release: app.convolve()
+
+        GridLayout:
+            cols:2
+            spacing: 20, 20
+            height: 700
+            size_hint_y: None
+            Button:
+                height: 80
+                size_hint_y: None
+                text: 'Add Audio File'
+                on_release: myroot.show_load()
+            Button:
+                height: 80
+                size_hint_y: None
+                text: "Select IR signal"
+                on_release: myroot.show_ir_signals()
+            GridLayout:
+                cols: 2
+                BoxLayout:
+                    orientation: 'vertical'
+                    spacing: 10, 10
+                    height: 40
+                    Label:
+                        height: 20
+                        font_size: 32
+                        markup: True
+                        text: ""
+                    Label:
+                        height: 20
+                        font_size: 32
+                        markup: True
+                        text: ""
+                    Label:
+                        height: 20
+                        id: song_artist_label
+                        font_size: 32
+                        markup: True
+                        halign: "left"
+                        size: self.texture_size
+                        text: "[i]No Audio file selected[/i]"
+                    Label:
+                        height: 20
+                        id: song_name_label
+                        font_size: 32
+                        markup: True
+                        text: ""
+                    Label:
+                        height: 20
+                        id: song_album_label
+                        font_size: 32
+                        text: ""
+                    Label:
+                        height: 20
+                        id: song_genre_label
+                        font_size: 32
+                        text: ""
+                    Label:
+                        height: 20
+                        id: song_duration_label
+                        font_size: 32
+                        text: ""
+                    Label:
+                        height: 20
+                        font_size: 32
+                        text: ""
+                    Label:
+                        height: 20
+                        font_size: 32
+                        text: ""
+                Image:
+                    source: "../media/images/music.jpg"
+                    allow_stretch: True
+                    size_hint_x: 0.9
+                    size_hint_y: 1.0
+                    id: image
+            GridLayout:
+                cols: 2
+                BoxLayout:
+                    orientation: 'vertical'
+                    Label:
+                        height: 20
+                        font_size: 32
+                        markup: True
+                        text: ""
+                    Label:
+                        height: 20
+                        font_size: 32
+                        markup: True
+                        text: ""
+                    Label:
+                        id: ir_signal_label
+                        height: 20
+                        font_size: 32
+                        markup: True
+                        text: "[i]No IR Signal selected[/i]"
+                    Label:
+                        height: 20
+                        font_size: 32
+                        markup: True
+                        text: ""
+                    Label:
+                        height: 20
+                        font_size: 32
+                        markup: True
+                        text: ""
+                    Label:
+                        height: 20
+                        font_size: 32
+                        markup: True
+                        text: ""
+                    Label:
+                        height: 20
+                        font_size: 32
+                        markup: True
+                        text: ""
+                    Label:
+                        height: 20
+                        font_size: 32
+                        markup: True
+                        text: ""
+                    Label:
+                        height: 20
+                        font_size: 32
+                        markup: True
+                        text: ""
+                Image:
+                    id: ir_signal_image
+                    source: ''
+                    allow_stretch: True
+                    size_hint_x: 0.0
+                    size_hint_y: 0.0
+            Label:
+                text: ""
+            Label:
+                text: ""
+        Slider:
+            id: slider
+            value: 0
+            max: 100
+            opacity: 0
+            on_touch_up: app.time_slider_change()
+        GridLayout:
+            id: audio_layout
+            cols: 3
+            opacity: 0
+            padding: 10
+            Label:
+                font_size: 22
+                id: duration_label
+                text: "00:08/03:55"
+                size: (100, 100)
+            GridLayout:
+                cols: 3
+                Label:
+                    text: ""
+                Button:
+                    font_size: 24
+                    spacing: (50, 0)
+                    halign: "center"
+                    id: play_pause_button
+                    text: "Play"
+                    size: (50, 50)
+                    on_release: app.play_pause()
+                Label:
+                    text: ""
+            GridLayout:
+                cols: 2
+                Label:
+                    id: volume_label
+                    font_size: 16
+                    text: "Vol: 50"
+                    size_hint_x: 0.2
+                Slider:
+                    size_hint_x: 0.8
+                    id: volume_slider
+                    value: 0.5
+                    max: 1.0
+                    on_value: app.volume_slider_change()
+        Button:
+            font_size: 24
+            height: 80
+            size_hint_y: None
+            on_release: app.convolve()
+            text: "Convolve audio"
+
+<LoadDialog>:
+    BoxLayout:
+        size: root.size
+        pos: root.pos
+        orientation: "vertical"
+        FileChooserIconView:
+            id: filechooser
+            rootpath: "../media/music"
+            filters: [lambda folder, filename: filename.endswith(".mp3") or filename.endswith(".wav")]
+            dirselect: True
+        BoxLayout:
+            size_hint_y: None
+            height: 30
+            Button:
+                text: "Load"
+                on_release: app.load(filechooser.selection)
+            Button:
+                text: "Cancel"
+                on_release: root.cancel()
+
+ScrollView:
+    do_scroll_x: False
+    do_scroll_y: True
+
+    Label:
+        size_hint_y: None
+        height: 35
+        padding: 10, 10
