@@ -73,8 +73,11 @@ class Convolver(App):
         # Set file's metadata info in app
         self.layout.ids.song_artist_label.text = "Artist: " + artist
         self.layout.ids.song_name_label.text = "Title: " + song_name.split(".")[0]
-        self.layout.ids.song_album_label.text = "Album: " + metadata.tags.album[0]
-        self.layout.ids.song_genre_label.text = "Genre: " + metadata.tags.genre[0]
+
+        if hasattr(metadata.tags, "album"):
+            self.layout.ids.song_album_label.text = "Album: " + metadata.tags.album[0]
+        if hasattr(metadata.tags, "genre"):
+            self.layout.ids.song_genre_label.text = "Genre: " + metadata.tags.genre[0]
 
         duration = metadata.streaminfo.duration
         self.layout.ids.song_duration_label.text = "Duration: {:02d}:{:02d}:{:02d}".format(
